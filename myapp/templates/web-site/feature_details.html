@@ -1,0 +1,239 @@
+{% extends 'web-site/base.html' %}
+{% load static %}
+
+{% block title %}{{ article2.title }} | My Website{% endblock %}
+
+{% block content %}
+<style>
+/* ==== GLOBAL LAYOUT ==== */
+.hero-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 60px auto 40px;
+  max-width: 1100px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  transition: 0.4s all ease-in-out;
+}
+
+body.dark-mode .hero-section {
+  background: rgba(34, 34, 34, 0.7);
+  box-shadow: 0 10px 40px rgba(255, 255, 255, 0.1);
+}
+
+/* ==== IMAGE ==== */
+.hero-image {
+  flex: 1 1 50%;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform 1s ease, filter 1s ease;
+}
+
+.hero-image:hover img {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+
+/* ==== TEXT ==== */
+.hero-text {
+  flex: 1 1 50%;
+  padding: 40px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,255,255,0.2));
+  backdrop-filter: blur(10px);
+}
+
+body.dark-mode .hero-text {
+  background: linear-gradient(135deg, rgba(34,34,34,0.5), rgba(20,20,20,0.2));
+}
+
+.article-title {
+  font-size: 2.6rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #007bff, #00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 20px;
+  position: relative;
+  letter-spacing: -1px;
+}
+
+.tagline {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+body.dark-mode .tagline {
+  color: #bbb;
+}
+
+.meta {
+  font-size: 0.9rem;
+  color: #555;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+body.dark-mode .meta {
+  color: #ccc;
+}
+
+.category-badge {
+  background: linear-gradient(45deg, #007bff, #00d4ff);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 3px 10px rgba(0,123,255,0.3);
+}
+
+/* ==== CONTENT SECTION ==== */
+.content-section {
+  max-width: 1100px;
+  margin: 30px auto 70px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 45px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+  line-height: 1.9;
+  color: #333;
+  font-size: 1.05rem;
+}
+
+body.dark-mode .content-section {
+  background: rgba(30, 30, 30, 0.85);
+  color: #ddd;
+}
+
+.content-section h2,
+.content-section h3 {
+  background: linear-gradient(45deg, #007bff, #00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+blockquote {
+  border-left: 5px solid #007bff;
+  padding-left: 20px;
+  font-style: italic;
+  background: rgba(0, 123, 255, 0.08);
+  border-radius: 8px;
+  margin: 25px 0;
+  color: #007bff;
+  font-weight: 500;
+}
+
+body.dark-mode blockquote {
+  border-left-color: #66b3ff;
+  background: rgba(102, 179, 255, 0.1);
+  color: #66b3ff;
+}
+
+/* ==== BACK BUTTON ==== */
+.back-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: linear-gradient(135deg, #007bff, #00d4ff);
+  color: #fff;
+  border: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: all 0.4s ease-in-out;
+  z-index: 10;
+}
+
+.back-btn:hover {
+  transform: translateY(-6px) rotate(-15deg);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+}
+
+/* ==== RESPONSIVE ==== */
+@media (max-width: 768px) {
+  .hero-section {
+    flex-direction: column;
+  }
+
+  .hero-text {
+    padding: 30px;
+    text-align: center;
+  }
+
+  .article-title {
+    font-size: 2rem;
+  }
+
+  .content-section {
+    padding: 30px;
+  }
+}
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section" data-aos="fade-up">
+  <div class="hero-image">
+    {% if article1.image %}
+      <img src="{{ article1.image.url }}" alt="{{ article2.title }}">
+    {% endif %}
+  </div>
+  <div class="hero-text">
+    <h1 class="article-title">{{ article1.title }}</h1>
+    <p class="tagline">{{ article1.description|striptags|truncatechars:120 }}</p>
+    <p class="meta">
+      by <strong>{{ article1.author_name }}</strong> · {{ article1.created_at|date:"F d, Y" }} · 
+      <span class="category-badge">{{ article1.category.CatName }}</span> · {{ article1.reading_time }} min read
+    </p>
+  </div>
+</div>
+
+<!-- Content Section -->
+<div class="content-section" data-aos="fade-up">
+  {{ article1.description|safe }}
+  {% if article1.highlight %}
+  <blockquote>{{ article1.highlight|safe }}</blockquote>
+  {% endif %}
+</div>
+
+<!-- Floating Back Button -->
+<button class="back-btn" onclick="window.history.back()">←</button>
+
+<!-- AOS Animation -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+AOS.init({
+  once: true,
+  duration: 900,
+  easing: 'ease-in-out',
+});
+</script>
+{% endblock %}

@@ -1,0 +1,734 @@
+{% extends 'web-site/base.html' %}
+{% load static %}
+
+
+{% block title %}Home | My Website{% endblock %}
+
+{% block content %}
+<style>
+  #home-page {
+    background: linear-gradient(135deg, #fdf6e3, #ffe6c2);
+    padding: 60px 20px;
+    overflow: hidden;
+  }
+
+
+
+  /* Divider */
+  .custom-divider {
+    width: 80px;
+    height: 4px;
+    background: #ff6b6b;
+    margin: 0 auto 30px auto;
+    border-radius: 2px;
+    animation: scaleIn 1s ease forwards;
+  }
+
+
+  .trending-container {
+    animation: fadeInUp 1s ease forwards;
+  }
+
+
+  /* ===== Section Titles & Divider ===== */
+  h2.section-title {
+    font-weight: 700;
+    font-size: 2.2rem;
+    color: #2c3e50;
+    text-align: center;
+    margin: 40px 0 20px;
+    position: relative;
+    animation: fadeInDown 1s ease forwards;
+  }
+
+  body.dark-mode h2.section-title {
+    color: #fff;
+  }
+
+
+
+  /* ===== Trending Tags ===== */
+  .trending-tag {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #ff6b6b, #f06595);
+    border: 2px solid #ddd;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+
+  .trending-tag::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(135deg, #ff6b6b, #f7b733);
+    transition: width 0.4s ease;
+    z-index: 0;
+  }
+
+  .trending-tag:hover::before {
+    width: 100%;
+  }
+
+  /* .trending-tag:hover span {
+    transform: translateY(-2px);
+  } */
+  .trending-tag:hover {
+    transform: scale(1.1) rotate(-2deg);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    color:#0080ff; 
+  }
+
+  .trending-tag span {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
+
+  @keyframes fadeInDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    0% {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+
+  /* Responsive */
+  @media(max-width:768px) {
+    .trending-tag {
+      padding: 8px 16px;
+      font-size: 1rem;
+    }
+  }
+
+  /* ===== Featured Card ===== */
+
+  .featured-content {
+    position: absolute;
+    bottom: 0;
+    z-index: 2;
+    padding: 30px;
+    width: 100%;
+    color: #fff;
+  }
+
+  .featured-content h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+
+  .featured-content p.lead {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+
+  .featured-content .btn {
+    transition: all 0.3s ease;
+  }
+
+  .featured-content .btn:hover {
+    background-color: #007bff;
+  }
+
+  #featured {
+    padding: 30px 20px;
+    text-align: center;
+  }
+
+
+  /* Featured Card */
+  .featured-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUp 1s ease forwards;
+  }
+
+  .featured-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  }
+
+  .featured-img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .featured-card:hover .featured-img {
+    transform: scale(1.1);
+  }
+
+  /* Overlay Gradient */
+  .overlay-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    pointer-events: none;
+  }
+
+  /* Content Styling */
+  .featured-content {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: #fff;
+    text-align: left;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.5s ease;
+  }
+
+  .featured-card:hover .featured-content {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .featured-content h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .featured-content p {
+    font-size: 1rem;
+    margin-bottom: 15px;
+  }
+
+  /* Button Styling */
+  .read-more-btn {
+    color: #fff;
+    border-color: #ff6b6b;
+    transition: all 0.3s ease;
+  }
+
+  .read-more-btn:hover {
+    background: #ff6b6b;
+    color: #fff;
+    border-color: #ff6b6b;
+    transform: translateY(-3px);
+  }
+
+  /* Entry Animations */
+  @keyframes fadeInDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    0% {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+
+  /* Responsive */
+  @media(max-width:768px) {
+    .featured-img {
+      height: 250px;
+    }
+
+    .featured-content h3 {
+      font-size: 1.5rem;
+    }
+
+    .featured-content p {
+      font-size: 0.95rem;
+    }
+  }
+
+
+  /* ===== Article Cards ===== */
+  #latest-article {
+    padding: 30px 20px;
+  }
+  #trending-article {
+    padding: 30px 20px;
+  }
+
+
+  /* ===== Article Card Wrapper (for scroll animation) ===== */
+  .article-card-wrapper {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.6s ease-out;
+  }
+
+  /* ===== Article Card ===== */
+  .article-card {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    cursor: pointer;
+  }
+
+  .article-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(135deg, #ff4d6d, #ff8c42);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .article-card:hover::before {
+    opacity: 1;
+  }
+
+  /* Hover Effects */
+  .article-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Image */
+  .article-img img {
+    width: 100%;
+    height: 270px;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+    border-radius: 0;
+  }
+
+  .article-card:hover .article-img img {
+    transform: scale(1) rotate(0.1deg);
+  }
+
+  /* Content */
+  .article-content {
+    padding: 20px;
+    transition: transform 0.5s ease;
+  }
+
+  .article-card:hover .article-content {
+    transform: translateY(-5px);
+  }
+
+  .article-content h5 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: #333;
+  }
+
+  .article-content .meta {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 12px;
+  }
+
+  .article-content p {
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    color: #555;
+  }
+
+  /* Read More Button */
+  .read-more-btn {
+    display: inline-block;
+    padding: 10px 22px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: rgb(42, 40, 40);
+    background: linear-gradient(135deg, #ff6b6b, #ff8c42);
+    border: none;
+    border-radius: 50px;
+    text-decoration: none;
+    box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .read-more-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(234, 82, 6, 0.15);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    border-radius: 50px;
+  }
+
+  .read-more-btn:hover::after {
+    transform: scaleX(1);
+  }
+
+  .read-more-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(255, 107, 107, 0.5);
+    color:  #0080ff;
+  }
+
+  /* Scroll Animation Trigger */
+  .article-card-wrapper.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Staggered Animation Delay */
+  .article-card-wrapper:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+
+  .article-card-wrapper:nth-child(2) {
+    transition-delay: 0.25s;
+  }
+
+  .article-card-wrapper:nth-child(3) {
+    transition-delay: 0.4s;
+  }
+
+  .article-card-wrapper:nth-child(4) {
+    transition-delay: 0.55s;
+  }
+
+  .article-card-wrapper:nth-child(5) {
+    transition-delay: 0.7s;
+  }
+
+  /* Responsive */
+  @media(max-width:768px) {
+    .article-img img {
+      height: 200px;
+    }
+
+    .article-content h5 {
+      font-size: 1.2rem;
+    }
+
+    .article-content p {
+      font-size: 0.9rem;
+    }
+  }
+
+  body.dark-mode .article-card {
+    background: #222;
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.05);
+  }
+
+  body.dark-mode .article-content {
+    color: #ffffff;
+  }
+
+  body.dark-mode .article-content .meta {
+    color: #ffffff;
+  }
+
+  .article-content .meta span {
+    color: #007bff;
+  }
+
+  body.dark-mode .article-content .meta span {
+    color: #66b3ff;
+  }
+body.dark-mode .article-content h5 {
+    color: #ffffff;
+  }
+  body.dark-mode .article-content p {
+    color: #ffffff;
+  }
+
+  body.dark-mode .read-more-btn {
+    color: #ffffff;
+  }
+
+  body.dark-mode .read-more-btn:hover {
+    color: #0080ff;
+  }
+
+  /* ===== Category Card ===== */
+  .category-card {
+    background: #fff;
+    padding: 30px 20px;
+    border-radius: 15px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: 100%;
+    text-align: center;
+  }
+
+  body.dark-mode .category-card {
+    background: #222;
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.05);
+    color: #ddd;
+  }
+
+  .category-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 25px rgba(0, 123, 255, 0.25);
+    background: linear-gradient(135deg, #e0f3ff, #fff);
+  }
+
+  body.dark-mode .category-card:hover {
+    background: linear-gradient(135deg, #339cff, #222);
+  }
+
+  .category-card img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: grayscale(80%);
+  }
+
+  .category-card:hover img {
+    transform: scale(1.15);
+    filter: grayscale(0%);
+  }
+
+  .category-card {
+    position: relative;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    cursor: pointer;
+  }
+
+  .category-card:hover h6 {
+    color: #ff4d6d;
+  }
+
+  body.dark-mode .category-card:hover h6 {
+    color: #66b3ff;
+  }
+
+
+  body.dark-mode #home-page {
+    background-color: #121212 !important;
+    /* dark background */
+    color: #fff !important;
+    /* text white */
+  }
+
+  body.dark-mode .section-title {
+    color: #66b3ff !important;
+    /* title color thoda highlight */
+  }
+
+  body.dark-mode #home-page .trending-tag {
+    color: #fff !important;
+    background: #333;
+  }
+
+
+  
+</style>
+
+
+
+<!-- ===== Trending Section ===== -->
+<section id="home-page" class="py-5 text-center" style="background:#fdf6e3;">
+  <h2 class="section-title">Trending Now</h2>
+  <div class="custom-divider"></div>
+  <div class=" d-flex justify-content-center flex-wrap gap-3 mt-4">
+    {% for tag in trending_tags %}
+    <a href="{% url 'tag_detail' tag.slug %}" class="trending-tag"> <span>#{{ tag.name }}</span> </a>
+    {% empty %}<p>No trending tags available.</p>{% endfor %}
+  </div>
+</section>
+
+<!-- ===== Featured Article ===== -->
+<section id="featured" class="container mt-5">
+  <h2 class="section-title">Featured Article</h2>
+  <div class="custom-divider"></div>
+  {% if featured_articles %}
+  {% with article=featured_articles.0 %}
+  <div class="featured-card mx-auto" style="max-width:800px;">
+    <img src="{{ article.image.url }}" alt="{{ article.title }}" class="featured-img" />
+    <div class="overlay-gradient"></div>
+    <div class="featured-content">
+      <h3>{{ article.title }}</h3>
+      <p class="lead">{{ article.description|striptags|truncatechars:150 }}</p>
+      <a href="{% url 'feature_article_detail' slug=featured_articles.0.slug %}" class="btn btn-outline-light">Read
+        More</a>
+    </div>
+  </div>
+  {% endwith %}{% else %}<p>No featured article available.</p>{% endif %}
+</section>
+
+<!-- ===== Latest Articles ===== -->
+<section id="latest-article" class="container mt-5">
+  <h2 class="section-title">Latest Articles</h2>
+  <div class="custom-divider"></div>
+  <div class="row g-4">
+    {% for article in latest_articles %}
+    <article class="col-md-4">
+      <div class="article-card">
+        <div class="article-img"><img src="{{ article.image.url }}" alt="{{ article.title }}"></div>
+        <div class="article-content">
+          <h5>{{ article.title }}</h5>
+          <p class="meta">{{ article.created_at|date:"F d, Y" }} · <span>{{ article.category.CatName }}</span></p>
+          <p>{{ article.description|striptags|truncatechars:100 }}</p>
+          <a href="{% url 'article_detail' slug=article.slug %}" class="read-more-btn">Read More →</a>
+        </div>
+      </div>
+    </article>
+    {% empty %}<p>No latest articles available.</p>{% endfor %}
+  </div>
+</section>
+
+<!-- ===== Trending Articles ===== -->
+<section id="trending-article" class="container mt-5">
+  <h2 class="section-title">Trending Articles</h2>
+  <div class="custom-divider"></div>
+
+  <div class="row g-4">
+    {% for article in trending_articles %}
+    <article class="col-md-4">
+      <div class="article-card">
+        <div class="article-img">
+          <img src="{{ article.image.url }}" alt="{{ article.title }}">
+        </div>
+        <div class="article-content">
+          <h5>{{ article.title }}</h5>
+          <p class="meta">{{ article.created_at|date:"F d, Y" }} · <span class="text-primary">{{ article.category.CatName }}</span> · {{ article.views }} views</p>
+          <p>{{ article.description|striptags|truncatechars:100 }}</p>
+          <a href="{% url 'article_detail' slug=article.slug %}" class="read-more-btn">Read More →</a>
+        </div>
+      </div>
+    </article>
+    {% empty %}
+    <p>No trending articles available.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ===== Popular Categories ===== -->
+<section id="categories" class="container mt-5">
+  <h2 class="section-title">Popular Categories</h2>
+  <div class="custom-divider"></div>
+  <div class="row g-4">
+    {% for cat in category %}
+    <div class="col-md-3 col-6">
+      <a href="{% url 'category_detail' slug=cat.CatSlug %}" class="text-decoration-none">
+        <div class="category-card text-center">
+          {% if cat.CatImage %}
+          <img src="{{ cat.CatImage.url }}" alt="{{ cat.CatName }}">
+          {% endif %}
+          <h6>{{ cat.CatName }}</h6>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.article-card-wrapper');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.2 });
+
+    cards.forEach(card => observer.observe(card));
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.category-card-wrapper');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.2 });
+
+    cards.forEach(card => observer.observe(card));
+  });
+</script>
+{% endblock %}

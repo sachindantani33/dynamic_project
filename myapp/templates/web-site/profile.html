@@ -1,0 +1,105 @@
+{% extends 'web-site/base.html' %}
+{% load static %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+
+<style>
+  /* Optional: Inline styles if you haven’t made separate CSS file yet */
+  .profile-container {
+    padding: 80px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+    flex-wrap: wrap;
+  }
+
+  .profile-image {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #007bff;
+    box-shadow: 0 0 12px rgba(0, 123, 255, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .profile-image:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 18px rgba(0, 123, 255, 0.6);
+  }
+
+  .profile-card {
+    max-width: 500px;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    transition: transform 0.3s ease;
+    text-align: center;
+  }
+
+  .profile-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .profile-card p {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+
+  .profile-card strong {
+    color: #007bff;
+  }
+
+  .edit-btn {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+  }
+
+  .edit-btn:hover {
+    background-color: #0056b3;
+  }
+</style>
+
+<div class="container profile-container">
+  
+  <!-- 🔹 Profile Header -->
+  <div class="profile-header">
+    {% if user.profile and user.profile.image %}
+      <img src="{{ user.profile.image.url }}" alt="{{ user.username }}'s profile photo" class="profile-image" loading="lazy">
+    {% else %}
+      <img src="{% static 'images/health.avif' %}" alt="Default profile photo" class="profile-image" loading="lazy">
+    {% endif %}
+    
+    <h2 class="fw-bold text-primary">My Profile</h2>
+  </div>
+
+  <!-- 🔹 Profile Details -->
+  <div class="profile-card">
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>First Name:</strong> {{ user.first_name|default_if_none:"—" }}</p>
+    <p><strong>Last Name:</strong> {{ user.last_name|default_if_none:"—" }}</p>
+
+    <a href="{% url 'edit_profile' %}" class="edit-btn">Edit Profile</a>
+  </div>
+</div>
+{% endblock %}

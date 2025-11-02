@@ -1,0 +1,213 @@
+{% extends 'web-site/base.html' %}
+{% load static %}
+
+{% block title %}{{ article.title }} | My Website{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-lg-8">
+
+      <!-- Article -->
+      <div class="card mb-4">
+        {% if article.image %}
+        <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+        {% endif %}
+        <div class="card-body">
+          <h1 class="card-title">{{ article.title }}</h1>
+          <p class="text-muted">{{ article.created_at|date:"F d, Y" }} · <strong>{{ article.category.CatName }}</strong></p>
+
+          <!-- 🔗 Share Section -->
+<div class="share-buttons mt-4">
+  <h5>Share this article:</h5>
+
+  <!-- WhatsApp -->
+  <a href="https://api.whatsapp.com/send?text={{ request.build_absolute_uri }}" 
+     target="_blank" class="btn btn-success btn-sm me-2">
+    <i class="bi bi-whatsapp"></i> WhatsApp
+  </a>
+
+  <!-- Facebook -->
+  <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+     target="_blank" class="btn btn-primary btn-sm me-2">
+    <i class="bi bi-facebook"></i> Facebook
+  </a>
+
+  <!-- Twitter / X -->
+  <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ article.title }}" 
+     target="_blank" class="btn btn-info btn-sm me-2">
+    <i class="bi bi-twitter"></i> Twitter
+  </a>
+
+  <!-- Email -->
+  <a href="mailto:?subject={{ article.title }}&body=Check out this article: {{ request.build_absolute_uri }}" 
+     class="btn btn-dark btn-sm">
+    <i class="bi bi-envelope"></i> Email
+  </a>
+</div>
+
+          <div class="card-text">{{ article.description|safe }}</div>
+        </div>
+      </div>
+
+      <!-- Comments Section -->
+      <div id="comments" class="mb-5">
+        <h4>Comments (<span id="comment-count">{{ comments.count }}</span>)</h4>
+
+        {% if user.is_authenticated %}
+        <form id="comment-form" method="post" class="mb-4">
+          {% csrf_token %}
+          <textarea name="content" rows="3" class="form-control mb-2" placeholder="Write a comment..."></textarea>
+          <input type="hidden" name="parent_id" id="parent-id">
+          <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+        {% else %}
+        <p>Please <a href="{% url 'login' %}?next={{ request.path }}">login</a> to comment.</p>
+        {% endif %}
+
+        <!-- Comment List -->
+        <div id="comment-list" class="list-group">
+          {% for comment in comments %}
+          <div class="list-group-item mb-3" data-id="{{ comment.id }}">
+            <div class="d-flex justify-content-between">
+              <h6>{{ comment.user.username }}</h6>
+              <small class="text-muted">{{ comment.created_at|date:"F d, Y H:i" }}</small>
+            </div>
+            <p>{{ comment.content|linebreaksbr }}</p>
+
+            <button class="btn btn-sm btn-link reply-btn" data-parent="{{ comment.id }}">Reply</button>
+
+            {% for reply in comment.replies.all %}
+            <div class="ms-4 mt-2 border-start ps-3">
+              <strong>{{ reply.user.username }}</strong>
+              <small class="text-muted">{{ reply.created_at|date:"F d, Y H:i" }}</small>
+              <p>{{ reply.content|linebreaksbr }}</p>
+            </div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ Sidebar -->
+<div class="col-lg-4">
+  <div class="sticky-top" style="top: 90px;">
+    
+    <!-- Categories -->
+    <div class="card mb-4">
+      <div class="card-header">श्रेणियाँ (Categories)</div>
+      <ul class="list-group list-group-flush">
+        {% for cat in categories %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="{% url 'category_detail' cat.CatSlug %}">{{ cat.CatName }}</a>
+
+          </li>
+        {% empty %}
+          <li class="list-group-item">No category available</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- हाल के लेख -->
+    <div class="card mb-4">
+      <div class="card-header">हाल के लेख (Recent Articles)</div>
+      <ul class="list-group list-group-flush">
+        {% for a in recent_articles %}
+          <li class="list-group-item">
+            <a href="{% url 'article_detail' a.slug %}">{{ a.title }}</a>
+          </li>
+        {% empty %}
+          <li class="list-group-item">कोई नया लेख नहीं</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+  </div>
+</div>
+
+<!-- ✅ AJAX SCRIPT -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('comment-form');
+  const commentList = document.getElementById('comment-list');
+  const countEl = document.getElementById('comment-count');
+  const parentInput = document.getElementById('parent-id');
+
+  // 💬 Function: attach reply button listener dynamically
+  function attachReplyListeners() {
+    document.querySelectorAll('.reply-btn').forEach(btn => {
+      btn.onclick = () => {
+        parentInput.value = btn.dataset.parent;
+        document.querySelector('textarea[name="content"]').focus();
+      };
+    });
+  }
+
+  // Initially attach listeners
+  attachReplyListeners();
+
+  // 💬 Handle Comment Submit
+  form?.addEventListener('submit', e => {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    fetch("", {
+      method: "POST",
+      headers: { "X-Requested-With": "XMLHttpRequest" },
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        const parentId = data.parent_id;
+        const newComment = document.createElement('div');
+
+        if (parentId) {
+          // 🟢 Add Reply under parent comment
+          newComment.className = 'ms-4 mt-2 border-start ps-3';
+          newComment.innerHTML = `
+            <strong>${data.user}</strong>
+            <small class="text-muted">${data.created_at}</small>
+            <p>${data.content}</p>
+          `;
+          const parent = document.querySelector('[data-id="' + parentId + '"]');
+          parent.appendChild(newComment);
+        } else {
+          // 🟢 Add main comment with Reply button
+          newComment.className = 'list-group-item mb-3';
+          newComment.setAttribute('data-id', 'temp-' + Date.now());
+          newComment.innerHTML = `
+            <div class="d-flex justify-content-between">
+              <h6>${data.user}</h6>
+              <small class="text-muted">${data.created_at}</small>
+            </div>
+            <p>${data.content}</p>
+            <button class="btn btn-sm btn-link reply-btn" data-parent="${data.parent_id || 'temp-' + Date.now()}">Reply</button>
+          `;
+          commentList.prepend(newComment);
+          countEl.textContent = parseInt(countEl.textContent) + 1;
+        }
+
+        // Reset form and parent id
+        form.reset();
+        parentInput.value = '';
+
+        // Re-attach reply listeners to new button also
+        attachReplyListeners();
+      }
+    });
+  });
+});
+</script>
+
+
+<style>
+.list-group-item { border-radius: 10px; }
+textarea.form-control { min-height: 90px; }
+.ms-4 { background: #f8f9fa; border-radius: 8px; }
+</style>
+{% endblock %}

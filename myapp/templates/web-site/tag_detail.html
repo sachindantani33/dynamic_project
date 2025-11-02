@@ -1,0 +1,180 @@
+{% extends 'web-site/base.html' %}
+{% load static %}
+
+{% block title %}#{{ tag.name }} Articles | My Website{% endblock %}
+
+{% block extra_head %}
+  <!-- AOS Animation CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+  <style>
+    /* Dark Mode Enhancements */
+    body.dark-mode .hero,
+    body.dark-mode .masonry-item {
+      background: #222;
+      box-shadow: 0 8px 25px rgba(255,255,255,0.05);
+    }
+    body.dark-mode .text-dark { color: #ddd !important; }
+    body.dark-mode .text-muted { color: #aaa !important; }
+
+    /* Section */
+    section { padding: 50px 15px; }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 50px;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg,#ff6a00,#ee0979);
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 5px;
+    }
+
+    /* Hero Article */
+    .hero-article {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      height: 450px;
+      margin-bottom: 30px;
+    }
+    .hero-article img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .hero-article:hover img { transform: scale(1.1); }
+    .hero-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 25px;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
+      color: #fff;
+    }
+
+    /* Masonry Grid */
+    .masonry { column-count: 3; column-gap: 20px; }
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 20px;
+      border-radius: 15px;
+      overflow: hidden;
+      transition: transform 0.4s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .masonry-item img {
+      width: 100%;
+      transition: transform 0.5s ease;
+    }
+    .masonry-item:hover img { transform: scale(1.05); }
+    .masonry-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 15px;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+      color: #fff;
+    }
+
+    /* Back Button */
+    .back-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: linear-gradient(45deg,#007bff,#00d4ff);
+      color: #fff;
+      border: none;
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      font-size: 1.8rem;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.35);
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+      z-index: 9999;
+    }
+    .back-btn:hover {
+      transform: scale(1.1) rotate(-15deg);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    @media(max-width:992px){ .masonry{column-count:2;} }
+    @media(max-width:576px){ .masonry{column-count:1;} .hero-article{height:300px;} }
+
+    /* Gradient Button */
+    .btn-gradient {
+      background: linear-gradient(90deg, #ff6a00, #ee0979);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: 30px;
+      padding: 8px 20px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .btn-gradient:hover {
+      background: linear-gradient(90deg, #ee0979, #ff6a00);
+      transform: translateY(-2px);
+      color: #fff;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<section class="container">
+  <h2 class="section-title" data-aos="zoom-in">🔥 #{{ tag.name }} Articles</h2>
+
+  {% if articles3 %}
+    <!-- Hero Article -->
+    <div class="hero-article" data-aos="fade-right">
+      <img src="{{ articles3.0.image.url }}" alt="{{ articles3.0.title }}">
+      <div class="hero-overlay">
+        <h2>{{ articles3.0.title }}</h2>
+        <p>{{ articles3.0.created_at|date:"F d, Y" }} · {{ articles3.0.category.CatName }}</p>
+        <p>{{ articles3.0.description|striptags|truncatechars:150 }}</p>
+        <a href="{% url 'article_detail' slug=articles3.0.slug %}" class="btn btn-gradient btn-sm mt-2">Read More →</a>
+      </div>
+    </div>
+
+    <!-- Masonry Grid -->
+    <div class="masonry" data-aos="fade-up">
+      {% for article in articles3|slice:"1:" %}
+      <div class="masonry-item">
+        <img src="{{ article.image.url }}" alt="{{ article.title }}">
+        <div class="masonry-overlay">
+          <h5>{{ article.title }}</h5>
+          <p>{{ article.created_at|date:"F d, Y" }} · {{ article.category.CatName }}</p>
+          <a href="{% url 'article_detail' article.slug %}" class="btn btn-gradient btn-sm mt-1">Read More →</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-center">❌ No articles found for this tag.</p>
+  {% endif %}
+</section>
+
+<!-- Back Button -->
+<button class="back-btn" onclick="window.history.back()">←</button>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({ duration: 1000, once: true });
+</script>
+{% endblock %}

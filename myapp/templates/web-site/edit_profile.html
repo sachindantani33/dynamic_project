@@ -1,0 +1,31 @@
+{% extends 'web-site/base.html' %}
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="padding: 88px;">
+  <h2>Edit Profile</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="card p-4 shadow-sm mt-3" style="max-width: 500px;">
+      <div class="mb-3">
+        <label>First Name</label>
+        <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label>Last Name</label>
+        <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ user.email }}" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label>Profile Image</label><br>
+        <img src="{{ user.profile.image.url }}" class="rounded-circle mb-3" width="90" height="90">
+        <input type="file" name="image" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-success">Save Changes</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

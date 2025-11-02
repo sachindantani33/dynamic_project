@@ -1,0 +1,385 @@
+{% extends 'web-site/base.html' %}
+{% load static %}
+
+
+{% block title %}Home | My Website{% endblock %}
+
+{% block content %}
+<style>
+:root{
+  --accent-gradient: linear-gradient(135deg,#ff6a00,#ee0979);
+  --card-shadow: 0 12px 25px rgba(0,0,0,0.08);
+  --hover-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+
+/* DARK MODE */
+body.dark-mode {
+  background: #121212;
+  color: #ddd;
+}
+body.dark-mode .hero,
+body.dark-mode .grid-card,
+body.dark-mode .sidebar-card {
+  background: #222;
+  box-shadow: 0 12px 25px rgba(255,255,255,0.05);
+}
+body.dark-mode .text-dark { color: #ddd !important; }
+body.dark-mode .text-muted { color: #aaa !important; }
+body.dark-mode .tag-pill { background: #333; color: #66b3ff; }
+body.dark-mode .badge-cat { background: #007bff; color: #fff; }
+body.dark-mode .back-btn { --accent-gradient: linear-gradient(135deg,#ff6a00,#ee0979);}
+body.dark-mode .excerpt {  color: #fff; }
+body.dark-mode .cat-meta {  color: #ffd504; }
+body.dark-mode .catname {  color:#007bff; }
+
+body.dark-mode a.btn-gradient { opacity: 0.9; }
+
+/* HERO */
+.hero {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  display:flex;
+  gap:25px;
+  align-items:center;
+  flex-wrap:wrap;
+  box-shadow: var(--card-shadow);
+  margin-bottom:28px;
+  animation: fadeInUp 1s ease forwards;
+}
+.cat-image{
+  width:160px;
+  height:145px;
+  border-radius:14px;
+  overflow:hidden;
+  flex:0 0 160px;
+  transition: transform 0.3s;
+}
+.cat-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.cat-image:hover{
+  transform: scale(1.08);
+}
+.cat-title{
+  font-size:2rem;
+  font-weight:700;
+  margin:0;
+}
+.cat-meta{
+  color:#666;
+  margin-top:6px;
+}
+@keyframes fadeInUp{
+  0%{opacity:0; transform: translateY(20px);}
+  100%{opacity:1; transform: translateY(0);}
+}
+
+/* GRID CARD */
+.grid-card{
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.grid-card:hover{
+  transform: translateY(-8px);
+  box-shadow: var(--hover-shadow);
+}
+.grid-card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+}
+.grid-card .btn-gradient{
+  background: var(--accent-gradient);
+  color:#fff;
+  border:none;
+  border-radius:30px;
+  padding:8px 16px;
+  font-weight:600;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.grid-card .btn-gradient:hover{
+  transform: translateY(-3px);
+  opacity:0.9;
+}
+
+/* BADGE & TAGS */
+.badge-cat{
+  background: var(--accent-gradient);
+  color:#fff;
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:600;
+  font-size:0.85rem;
+}
+.tag-pill{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:50px;
+  background:#f2f6fb;
+  margin:6px 6px 6px 0;
+  color:#1b6fb8;
+  font-weight:600;
+  cursor:pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.tag-pill:hover{
+  transform: scale(1.15);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* SIDEBAR */
+.sidebar-card{
+  background:#fff;
+  padding:18px;
+  border-radius:14px;
+  box-shadow: var(--card-shadow);
+  margin-bottom:22px;
+  animation: fadeInUp 1s ease forwards;
+}
+.sidebar-card img{
+  border-radius:8px;
+  transition: transform 0.3s;
+}
+.sidebar-card img:hover{
+  transform: scale(1.05);
+}
+
+/* FLOATING HOME BUTTON */
+.back-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: var(--accent-gradient);
+  color: #fff;
+  border: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  z-index: 1000;
+}
+.back-btn:hover{
+  transform: scale(1.1) rotate(-15deg);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.3);
+}
+
+/* EXCERPT & TEXT */
+.excerpt{color:#444; line-height:1.5;}
+.pagination .page-link{border-radius:10px;}
+
+/* RESPONSIVE */
+@media(max-width:991px){
+  .hero{flex-direction:column; align-items:flex-start;}
+  .cat-image{width:100%; height:200px;}
+}
+
+/* ===== Trending Tags ===== */
+    .trending-tag {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 30px;
+      background: #fff;
+      border: 2px solid #ddd;
+      font-weight: 600;
+      color: #333;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .trending-tag::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 0; height: 100%;
+      background: linear-gradient(135deg, #ff6b6b, #f7b733);
+      transition: width 0.4s ease;
+      z-index: 0;
+    }
+    .trending-tag:hover::before { width: 100%; }
+    .trending-tag:hover { color: #fff; transform: translateY(-4px); }
+    .trending-tag span { position: relative; z-index: 1; }
+
+    h2.section-title {
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: #2c3e50;
+      text-align: center;
+      margin: 40px 0 20px;
+      position: relative;
+    }
+    body.dark-mode h2.section-title { color: #fff; }
+
+    .custom-divider {
+      width: 70px;
+      height: 4px;
+      background: linear-gradient(90deg, #ff6b6b, #f7b733);
+      border-radius: 2px;
+      margin: 0 auto 40px;
+    }
+    body.dark-mode .section-title {
+    color: #66b3ff !important; /* title color thoda highlight */
+}
+
+body.dark-mode #home-page .trending-tag {
+    color: #fff !important; 
+    background: #333; 
+}
+body.dark-mode #home-page {
+    background-color: #121212 !important; /* dark background */
+    color: #fff !important; /* text white */
+}
+</style>
+
+<!-- ===== Trending Section ===== -->
+<section id="home-page" class="py-5 text-center" style="background:#fdf6e3;">
+  <h2 class="section-title">Trending Now</h2>
+  <div class="custom-divider"></div>
+  <div class=" d-flex justify-content-center flex-wrap gap-3 mt-4">
+    {% for tag in trending_tags %}
+      <a href="{% url 'tag_detail' tag.slug %}" class="trending-tag"> <span>#{{ tag.name }}</span> </a>
+    {% empty %}<p>No trending tags available.</p>{% endfor %}
+  </div>
+</section>
+
+<div class="container py-4">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="cat-image">
+      {% if category.CatImage %}
+        <img src="{{ category.CatImage.url }}" alt="{{ category.CatName }}">
+      {% else %}
+        <img src="{% static 'images/category-default.jpg' %}" alt="default">
+      {% endif %}
+    </div>
+    <div>
+      <h1 class="cat-title">{{ category.CatName }}</h1>
+      <div class="cat-meta">Popular articles · <strong>{{ page_obj.paginator.count }}</strong> posts</div>
+      <p class="mt-3">Discover the latest and most popular posts from <strong class="catname">{{ category.CatName }}</strong>. Explore curated reads, trending topics and more.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- MAIN LIST -->
+    <div class="col-lg-8">
+      <div class="row g-3">
+        {% for article in page_obj %}
+          <div class="col-md-6">
+            <article class="grid-card">
+              <a href="{% url 'article_detail' slug=article.slug %}">
+                {% if article.image %}
+                  <img src="{{ article.image.url }}" alt="{{ article.title }}">
+                {% else %}
+                  <img src="{% static 'images/default.jpg' %}" alt="default">
+                {% endif %}
+              </a>
+              <div class="p-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <div>
+                    <h5 style="margin-bottom:6px"><a href="{% url 'article_detail' slug=article.slug %}" class="text-dark text-decoration-none">{{ article.title|truncatechars:60 }}</a></h5>
+                    <div class="small text-muted">{{ article.created_at|date:"F d, Y" }} · {{ article.views }} views</div>
+                  </div>
+                  <div><span class="badge-cat">{{ article.category.CatName }}</span></div>
+                </div>
+                <p class="excerpt">{{ article.description|striptags|truncatechars:120 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <a class="btn-gradient" href="{% url 'article_detail' slug=article.slug %}">Read</a>
+                  <div>
+                    {% for tag in article.tags.all|slice:":3" %}
+                      <span class="tag-pill">{{ tag.name }}</span>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        {% empty %}
+          <p>No articles in this category yet.</p>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if page_obj.has_other_pages %}
+      <nav class="mt-4">
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Prev</a></li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Prev</span></li>
+          {% endif %}
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+              <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Next</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="col-lg-4">
+      <div class="sidebar-card">
+        <h6>Latest Articles</h6><hr>
+        {% for a in latest_articles %}
+          <div class="d-flex gap-2 mb-2">
+            <div style="width:64px;height:54px;border-radius:8px;overflow:hidden">
+              {% if a.image %}<img src="{{ a.image.url }}" style="width:100%;height:100%;object-fit:cover">{% else %}<img src="{% static 'images/default.jpg' %}" style="width:100%;height:100%;object-fit:cover">{% endif %}
+            </div>
+            <div>
+              <a href="{% url 'article_detail' slug=a.slug %}" class="text-decoration-none fw-bold text-dark">{{ a.title|truncatechars:45 }}</a>
+              <div class="small text-muted">{{ a.created_at|date:"M d" }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="sidebar-card">
+        <h6>Trending Articles</h6><hr>
+        {% for t in trending_articles %}
+          <div class="mb-2">
+            <a href="{% url 'article_detail' slug=t.slug %}" class="text-decoration-none text-dark">{{ t.title|truncatechars:60 }}</a>
+            <div class="small text-muted">{{ t.trending_order|default:"-" }} · {{ t.views }} views</div>
+          </div>
+        {% empty %}
+          <p class="small text-muted">No trending articles.</p>
+        {% endfor %}
+      </div>
+
+      <div class="sidebar-card">
+        <h6>Tags</h6><hr>
+        {% for tag in trending_tags %}
+          <a class="tag-pill text-decoration-none" href="{% url 'tag_detail' slug=tag.slug %}">{{ tag.name }}</a>
+        {% endfor %}
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- Floating Home Button -->
+<button class="back-btn" onclick="window.location.href='{% url 'home_page' %}'">←</button>
+
+{% endblock %}
+
+
+
+

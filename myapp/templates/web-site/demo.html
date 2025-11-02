@@ -1,0 +1,823 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Modern Article Hub</title>
+
+  <!-- Styles & Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    /* Navbar brand image */
+.navbar-brand img {
+  filter: none;
+  transition: filter 0.3s ease;
+}
+
+
+body.dark-mode .logo-img {
+  filter: invert(1) brightness(1.2);
+}
+
+    /* Base styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: rgb(225, 223, 223);
+      color: #333;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Dark mode styles */
+    body.dark-mode {
+      background-color: #121212;
+      color: #ddd;
+    }
+
+    /* Section Titles */
+    h2.section-title {
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: #2c3e50;
+      margin: 40px 0 20px;
+      text-align: center;
+      padding-top: 30px;
+      transition: color 0.3s;
+    }
+    body.dark-mode h2.section-title {
+      color: #ddd;
+    }
+
+    /* Divider */
+    .custom-divider {
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, #007bff, #00c6ff);
+      border-radius: 2px;
+      margin: 0 auto 40px;
+      transition: background 0.3s;
+    }
+    body.dark-mode .custom-divider {
+      background: linear-gradient(90deg, #339cff, #66d0ff);
+    }
+
+    /* Navbar */
+    nav.navbar {
+      background-color: #fff !important;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.dark-mode nav.navbar {
+      background-color: #1f1f1f !important;
+    }
+    body.dark-mode nav.navbar .navbar-brand,
+    body.dark-mode nav.navbar .nav-link {
+      color: #ddd !important;
+    }
+    body.dark-mode nav.navbar .nav-link:hover {
+      color: #66d0ff !important;
+    }
+
+    /* trending */
+    
+    #trending_now {
+      position: relative;
+      background-image: url('https://st3.depositphotos.com/11272048/37227/i/450/depositphotos_372273898-stock-photo-aged-paper-sheet-blank-old.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      padding-bottom: 120px;
+      overflow: hidden;
+    }
+
+    /* Glowing Particles Background (CSS-only) */
+    .particles {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      animation: moveParticle 12s infinite ease-in-out;
+    }
+
+    .particle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+    .particle:nth-child(2) { top: 30%; left: 80%; animation-delay: 2s; }
+    .particle:nth-child(3) { top: 60%; left: 50%; animation-delay: 4s; }
+    .particle:nth-child(4) { top: 40%; left: 10%; animation-delay: 6s; }
+    .particle:nth-child(5) { top: 70%; left: 70%; animation-delay: 8s; }
+    .particle:nth-child(6) { top: 20%; left: 60%; animation-delay: 10s; }
+
+    @keyframes moveParticle {
+      0% { transform: translateY(0) scale(1); opacity: 0.5; }
+      50% { transform: translateY(-40px) scale(1.5); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 0.5; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-title {
+      font-weight: 700;
+      font-size: 2.5rem;
+      color: #2c3e50;
+      margin-bottom: 1rem;
+    }
+
+    .custom-divider {
+      width: 70px;
+      height: 4px;
+      background: linear-gradient(90deg, #ff6b6b, #f7b733);
+      border-radius: 2px;
+      -margin: 0 auto;
+    }
+
+    .trending-tag {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 30px;
+      background: #ffffff;
+      border: 2px solid #ddd;
+      font-weight: 600;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.4s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      font-size: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .trending-tag::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(135deg, #ff6b6b, #f7b733);
+      transition: width 0.4s ease;
+      z-index: 0;
+    }
+
+    .trending-tag:hover::before {
+      width: 100%;
+    }
+
+    .trending-tag:hover {
+      color: white;
+      border-color: transparent;
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .trending-tag span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Wave SVG */
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+    }
+
+
+
+    /* Featured Card */
+    .featured-card {
+      height: 480px;
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .featured-card:hover {
+      box-shadow: 0 10px 30px rgba(0, 123, 255, 0.5);
+    }
+
+    .featured-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .featured-card:hover .featured-img {
+      transform: scale(1.05);
+    }
+
+    .overlay-gradient {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
+      z-index: 1;
+    }
+
+    .featured-content {
+      position: absolute;
+      bottom: 0;
+      z-index: 2;
+      padding: 30px;
+      width: 100%;
+      color: #fff;
+    }
+
+    .featured-content h3 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+
+    .featured-content p.lead {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .featured-content .btn {
+      transition: all 0.3s ease;
+    }
+
+    .featured-content .btn:hover {
+      background-color: #007bff;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Quote Box */
+    .quote-box {
+      background: linear-gradient(to right, #e8f0fe, #dbeeff);
+      padding: 40px 30px;
+      margin: 20px auto;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 800px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      font-style: italic;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.dark-mode .quote-box {
+      background: linear-gradient(to right, #1e2a38, #2c3a4b);
+      color: #bbb;
+      box-shadow: none;
+    }
+
+    .quote-box h4 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .quote-box p {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      color: #444;
+    }
+    body.dark-mode .quote-box p {
+      color: #999;
+    }
+
+    /* Articles */
+    .article-card {
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.dark-mode .article-card {
+      background: #222;
+      box-shadow: 0 8px 20px rgba(255, 255, 255, 0.05);
+    }
+
+    .article-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 25px rgba(0, 123, 255, 0.2);
+    }
+
+    .article-img img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .article-card:hover .article-img img {
+      transform: scale(1.05);
+    }
+
+    .article-content {
+      padding: 20px;
+      flex-grow: 1;
+      color: #333;
+    }
+    body.dark-mode .article-content {
+      color: #ddd;
+    }
+
+    .article-content h5 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: inherit;
+    }
+
+    .article-content .meta {
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 15px;
+    }
+    body.dark-mode .article-content .meta {
+      color: #aaa;
+    }
+
+    .article-content .meta span {
+      color: #007bff;
+    }
+    body.dark-mode .article-content .meta span {
+      color: #66b3ff;
+    }
+
+    .read-more-btn {
+      display: inline-block;
+      font-size: 0.9rem;
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .read-more-btn:hover {
+      text-decoration: underline;
+      color: #0056b3;
+    }
+
+    body.dark-mode .read-more-btn {
+      color: #66b3ff;
+    }
+
+    body.dark-mode .read-more-btn:hover {
+      color: #99ccff;
+    }
+
+    /* Popular Categories */
+    .category-card {
+      background: #ffffff;
+      padding: 30px 20px;
+      border-radius: 15px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      color: #333;
+    }
+
+    body.dark-mode .category-card {
+      background: #222;
+      box-shadow: 0 6px 16px rgba(255, 255, 255, 0.05);
+      color: #ddd;
+    }
+
+    .category-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 25px rgba(0, 123, 255, 0.25);
+      background: linear-gradient(135deg, #e0f3ff, #ffffff);
+    }
+    body.dark-mode .category-card:hover {
+      background: linear-gradient(135deg, #339cff, #222);
+    }
+
+    .category-card img {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 15px;
+      transition: transform 0.3s ease, filter 0.3s ease;
+      filter: grayscale(80%);
+    }
+
+    .category-card:hover img {
+      transform: scale(1.1);
+      filter: grayscale(0%);
+    }
+
+    .category-card h6 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0;
+      transition: color 0.3s ease;
+    }
+
+    .category-card:hover h6 {
+      color: #007bff;
+    }
+    body.dark-mode .category-card:hover h6 {
+      color: #66b3ff;
+    }
+
+    /* Author Spotlight */
+    #author .btn.read-btn {
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    #author .btn.read-btn:hover {
+      background: #0d6efd;
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    /* Newsletter */
+    #newsletter input[type="email"] {
+      border-radius: 25px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      transition: border-color 0.3s ease;
+    }
+    #newsletter input[type="email"]:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+    #newsletter .btn-primary {
+      border-radius: 25px;
+      padding: 12px 20px;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      background: #343a40;
+      color: #eee;
+      padding: 25px 0;
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9rem;
+    }
+
+    /* Dark mode footer */
+    body.dark-mode footer {
+      background: #1a1a1a;
+      color: #aaa;
+    }
+
+    /* Navbar brand image */
+    .navbar-brand img {
+      filter: brightness(1);
+      transition: filter 0.3s ease;
+    }
+    body.dark-mode .navbar-brand img {
+      filter: brightness(0.8);
+    }
+    
+
+    /* Dark mode toggle button */
+    #darkModeToggle {
+      cursor: pointer;
+      font-size: 1.2rem;
+      border: none;
+      background: none;
+      color: #007bff;
+      transition: color 0.3s;
+    }
+    #darkModeToggle:hover {
+      color: #0056b3;
+    }
+    body.dark-mode #darkModeToggle {
+      color: #66b3ff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="/" aria-label="{{ header_settings.site_name }} Home">
+      {% if header_settings.logo %}
+        <img src="{{ header_settings.logo.url }}" width="40" height="40" alt="Logo" class="logo-img" />
+      {% endif %}
+      <span class="ms-2 fw-bold">{{ header_settings.site_name }}</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu"
+      aria-controls="navmenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navmenu">
+      <ul class="navbar-nav ms-auto gap-3 align-items-center">
+        {% for item in menu_items %}
+          <li class="nav-item">
+            <!-- href="#" + data-target for smooth scroll -->
+            <a class="nav-link menu-link" href="#" data-target="{{ item.link|cut:'#' }}">
+              {{ item.name }}
+            </a>
+          </li>
+        {% endfor %}
+        <li class="nav-item">
+          <!-- Dark Mode Toggle -->
+          <button id="darkModeToggle" aria-label="Toggle Dark Mode" title="Toggle Dark Mode">🌙</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+
+  <!-- trendin -->
+  <section id="trending_now" class="py-5" data-aos="fade-up">
+    <!-- Glowing Particles -->
+    <div class="particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <div class="container text-center">
+      <h2 class="section-title" data-aos="zoom-in">🔥 Trending Now</h2>
+      <div class="custom-divider mb-4" data-aos="zoom-in" data-aos-delay="200"></div>
+
+      <div class="d-flex justify-content-center flex-wrap gap-3 mt-4" data-aos="fade-up" data-aos-delay="400">
+        <a href="#" class="trending-tag" data-aos="flip-left" data-aos-delay="500"><span>#Travel</span></a>
+        <a href="#" class="trending-tag" data-aos="flip-left" data-aos-delay="600"><span>#Business</span></a>
+        <a href="#" class="trending-tag" data-aos="flip-left" data-aos-delay="700"><span>#Design</span></a>
+        <a href="#" class="trending-tag" data-aos="flip-left" data-aos-delay="800"><span>#Environment</span></a>
+        <a href="#" class="trending-tag" data-aos="flip-left" data-aos-delay="900"><span>#Science</span></a>
+      </div>
+    </div>
+
+    <!-- Wave SVG -->
+    <svg class="wave" viewBox="0 0 1440 320">
+      <path fill="#fff" fill-opacity="1" d="M0,256L48,224C96,192,192,128,288,117.3C384,107,480,149,576,181.3C672,213,768,235,864,218.7C960,203,1056,149,1152,149.3C1248,149,1344,203,1392,229.3L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+  </section>
+  <!-- Featured Article Section -->
+ <section id="featured" class="container mt-5">
+  <h2 class="section-title">Featured Article</h2>
+  <div class="custom-divider"></div>
+
+  {% if featured_articles %}
+    {% with article=featured_articles.0 %}
+    <div class="featured-card mx-auto" style="max-width: 800px;">
+      <img src="{{ article.image.url }}" alt="{{ article.title }}" class="featured-img" />
+      <div class="overlay-gradient"></div>
+      <div class="featured-content">
+        <h3>{{ article.title }}</h3>
+        <p class="lead">{{ article.description|striptags|truncatechars:150 }}</p>
+       <a href="{% url 'article_detail' featured_articles.0.id %}" class="btn btn-outline-light">
+  Read More
+</a>
+      </div>
+    </div>
+    {% endwith %}
+  {% else %}
+    <p>No featured article available.</p>
+  {% endif %}
+</section>
+
+
+
+
+
+  <!-- Inspirational Quote -->
+  <section class="quote-box mt-5" aria-label="Inspirational Quote">
+    <h4>“A reader lives a thousand lives before he dies...”</h4>
+    <p>- George R.R. Martin</p>
+  </section>
+
+  <!-- Latest Articles Section -->
+ <section id="latest" class="container mt-5">
+  <h2 class="section-title">Latest Articles</h2>
+  <div class="custom-divider"></div>
+
+  <div class="row g-4">
+    {% for article in latest_articles %}
+    <article class="col-md-4">
+      <div class="article-card">
+        <div class="article-img">
+          <img src="{{ article.image.url }}" alt="{{ article.title }}">
+        </div>
+        <div class="article-content">
+          <h5>{{ article.title }}</h5>
+          <p class="meta">{{ article.created_at|date:"F d, Y" }} · <span class="text-primary">{{ article.category.CatName }}</span></p>
+          <p>{{ article.description|striptags|truncatechars:100 }}</p>
+          <a href="#" class="read-more-btn">Read More →</a>
+        </div>
+      </div>
+    </article>
+    {% empty %}
+    <p>No latest articles available.</p>
+    {% endfor %}
+  </div>
+</section>
+
+
+
+
+
+  <!-- Trending Articles Section -->
+ <section id="trending" class="container mt-5">
+  <h2 class="section-title">Trending Articles</h2>
+  <div class="custom-divider"></div>
+
+  <div class="row g-4">
+    {% for article in trending_articles %}
+    <article class="col-md-4">
+      <div class="article-card">
+        <div class="article-img">
+          <img src="{{ article.image.url }}" alt="{{ article.title }}">
+        </div>
+        <div class="article-content">
+          <h5>{{ article.title }}</h5>
+          <p class="meta">{{ article.created_at|date:"F d, Y" }} · <span class="text-primary">{{ article.category.CatName }}</span> · {{ article.views }} views</p>
+          <p>{{ article.description|striptags|truncatechars:100 }}</p>
+          <a href="#" class="read-more-btn">Read More →</a>
+        </div>
+      </div>
+    </article>
+    {% empty %}
+    <p>No trending articles available.</p>
+    {% endfor %}
+  </div>
+</section>
+
+
+
+
+  <!-- Popular Categories Section -->
+ <section id="categories" class="container mt-5" data-aos="fade-up" aria-label="Popular Categories">
+    <h2 class="section-title">Popular Categories</h2>
+    <div class="custom-divider"></div>
+
+    <div class="row g-4">
+        {% for cat in category %}
+        <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+            <div class="category-card text-center" tabindex="0" role="button" aria-pressed="false" aria-label="{{ cat.CatName }} Category">
+                {% if cat.CatImage %}
+                    <img src="{{ cat.CatImage.url }}" alt="{{ cat.CatName }} Icon" width="100" />
+                {% else %}
+                    <span>no image</span>
+                {% endif %}
+                <h6>{{ cat.CatName }}</h6>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+
+
+  <!-- Author Spotlight Section -->
+  <section id="author" class="container mt-5" data-aos="fade-up" aria-label="Author Spotlight">
+    <h2 class="section-title">Author Spotlight</h2>
+    <div class="custom-divider"></div>
+
+    <div class="row align-items-center gy-4">
+      <div class="col-md-4 text-center">
+        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Author - Jane Doe" class="rounded-circle img-fluid" style="max-width: 200px" />
+      </div>
+      <div class="col-md-8">
+        <h3>Jane Doe</h3>
+        <p class="lead">
+          Jane is a passionate writer and tech enthusiast who loves to explore new ideas and share knowledge with the world. She believes in the power of storytelling to inspire change.
+        </p>
+        <a href="#" class="btn btn-outline-primary read-btn">Read More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section id="newsletter" class="container mt-5 mb-5" data-aos="fade-up" aria-label="Newsletter Subscription">
+    <h2 class="section-title text-center">Subscribe to Our Newsletter</h2>
+    <div class="custom-divider"></div>
+
+    <form class="d-flex justify-content-center gap-2 flex-wrap" role="form" aria-label="Newsletter subscription form" onsubmit="event.preventDefault(); alert('Subscribed!');">
+      <input type="email" class="form-control" placeholder="Enter your email" aria-required="true" aria-label="Email address" required />
+      <button type="submit" class="btn btn-primary">Subscribe</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  
+  <footer class="bg-dark text-light py-5 mt-5">
+  <div class="container">
+    <div class="row">
+      
+      <div class="col-md-4 mb-4">
+        <h5 class="text-uppercase">About Me</h5>
+        <p>Hello! I'm <strong>Sachin Kumar</strong>, a tech enthusiast sharing articles on programming, data science, and modern web development. Stay connected!</p>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <h5 class="text-uppercase">Quick Links</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-decoration-none text-light">Home</a></li>
+          <li><a href="#" class="text-decoration-none text-light">Articles</a></li>
+          <li><a href="#" class="text-decoration-none text-light">Tutorials</a></li>
+          <li><a href="#" class="text-decoration-none text-light">Contact Me</a></li>
+        </ul>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <h5 class="text-uppercase">Follow Me</h5>
+        <a href="#" class="text-light me-3"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="text-light me-3"><i class="bi bi-twitter-x"></i></a>
+        <a href="#" class="text-light me-3"><i class="bi bi-linkedin"></i></a>
+        <a href="#" class="text-light"><i class="bi bi-github"></i></a>
+      </div>
+    </div>
+
+    <hr class="border-light" />
+
+    <div class="text-center mt-3">
+      <p class="mb-0">© 2025 <strong>Sachin Dantani</strong>. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      once: true,
+      duration: 700,
+      easing: 'ease-in-out',
+    });
+
+    // Dark Mode Toggle
+    const toggleBtn = document.getElementById('darkModeToggle');
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      // Toggle icon
+      if (document.body.classList.contains('dark-mode')) {
+        toggleBtn.textContent = '☀️';
+        toggleBtn.setAttribute('aria-label', 'Toggle Light Mode');
+      } else {
+        toggleBtn.textContent = '🌙';
+        toggleBtn.setAttribute('aria-label', 'Toggle Dark Mode');
+      }
+    });
+  </script>
+
+<script>
+document.querySelectorAll('.menu-link').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent default URL navigation
+    let targetId = this.getAttribute('data-target'); // Section ID
+    let targetElement = document.getElementById(targetId);
+    if(targetElement){
+      // Smooth scroll
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+</script>
+
+<script>
+  function toggleDarkMode() {
+    const body = document.body;
+    body.classList.toggle('dark-mode');
+
+    if(body.classList.contains('dark-mode')){
+        document.cookie = "dark_mode=1;path=/";  // Set cookie
+    } else {
+        document.cookie = "dark_mode=0;path=/";  // Unset cookie
+    }
+}
+
+</script>
+  
+</body>
+
+</html>

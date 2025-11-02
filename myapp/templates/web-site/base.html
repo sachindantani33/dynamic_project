@@ -1,0 +1,338 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}My Website{% endblock %}</title>
+
+  <!-- Bootstrap & Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  <!-- Dark Mode CSS -->
+  <style>
+     body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.dark-mode nav.navbar {
+  background-color: #1f1f1f !important;
+}
+body.dark-mode nav.navbar .navbar-brand,
+body.dark-mode nav.navbar .nav-link {
+  color: #ddd !important;
+}
+body.dark-mode nav.navbar .nav-link:hover {
+  color: #66d0ff !important;
+  
+}
+.collapse ul li a:hover{
+  color: rgb(0, 0, 0);
+  
+}
+
+    body.dark-mode {
+      background-color: #121212;
+      color: #ddd;
+    }
+
+    /* ===== Navbar ===== */
+    nav.navbar {
+      background-color: #fff !important;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.dark-mode nav.navbar {
+      background-color: #1f1f1f !important;
+    }
+    .navbar-brand img {
+      width: 45px;
+      height: 45px;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+    body.dark-mode .navbar-brand img {
+      filter: brightness(0.8);
+    }
+     body.dark-mode .navbar-brand img {
+      background-color: white;
+    }
+
+     /* ===== Dark Mode Button ===== */
+    #darkModeToggle { cursor: pointer; font-size: 1.2rem; border:none; background:none; color: #007bff; transition: color 0.3s; }
+    #darkModeToggle:hover { color: #0056b3; }
+    body.dark-mode #darkModeToggle { color: #66b3ff; }
+
+
+    
+ /* ==== Modern Glass Buttons ==== */
+.modern-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  color: #000;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.modern-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: white !important;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+}
+
+.modern-btn.register {
+  background: rgba(255, 215, 0, 0.25);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+.modern-btn.register:hover {
+  background: linear-gradient(135deg, #ffcc00, #ff9900);
+  color: #fff !important;
+  box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4);
+}
+
+/* Dark Mode Compatibility */
+body.dark-mode .modern-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ddd;
+}
+
+body.dark-mode .modern-btn:hover {
+  background: linear-gradient(135deg, #66b3ff, #0044ff);
+  color: #fff !important;
+  box-shadow: 0 4px 15px rgba(0, 102, 255, 0.5);
+}
+
+body.dark-mode .modern-btn.register:hover {
+  background: linear-gradient(135deg, #ffb300, #ff6600);
+}
+
+
+/* User icon wrapper - ensure perfect circle */
+.user-icon {
+  width: 40px;               /* fixed width */
+  height: 40px;              /* fixed height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;        /* perfect circle */
+  transition: transform 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease;
+  position: relative;
+  background-color: rgba(255,255,255,0.05); /* subtle background */
+}
+
+/* Hover effect - smooth & perfect circle */
+.user-icon:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 12px rgba(0, 198, 255, 0.5);
+  background-color: rgba(0,198,255,0.1);
+  border-radius: 50%; /* ensure still circle */
+}
+
+/* Online small dot */
+.user-icon .online-dot {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  width: 10px;
+  height: 10px;
+  background: #00ff88;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  animation: smoothPulse 2s infinite;
+}
+
+/* Smooth pulse animation */
+@keyframes smoothPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+.navbar {
+  position: sticky;
+  z-index: 1050; 
+}
+.dropdown-menu {
+  z-index: 2000 !important; /* Forcefully sabse upar */
+}
+
+  </style>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body id="body">
+  {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+      <div class="alert 
+                  {% if message.tags %}
+                    alert-{{ message.tags }}
+                  {% else %}
+                    alert-info
+                  {% endif %} 
+                  alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+
+  <!-- 🌐 Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light shadow-sm sticky-top">
+<div class="container">
+  <a class="navbar-brand d-flex align-items-center" href="/">
+    {% if header_settings.logo %}<img src="{{ header_settings.logo.url }}" alt="Logo" class="logo-img">{% endif %}
+    <span class="ms-2 fw-bold">{{ header_settings.site_name }}</span>
+  </a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navmenu">
+    <ul class="navbar-nav ms-auto gap-3 align-items-center">
+      {% for item in menu_items %}
+      <li class="nav-item"><a class="nav-link" href="{{ item.link }}">{{ item.name }}</a></li>
+      {% endfor %}
+      
+      <!-- <li class="nav-item d-flex gap-2">
+  <a href="{% url 'login_user' %}" class="modern-btn">
+    <i class="bi bi-box-arrow-in-right"></i> Login
+  </a>
+</li> -->
+{% if user.is_authenticated %}
+<li class="nav-item dropdown">
+  <a class="nav-link position-relative d-flex align-items-center user-icon" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <!-- User Icon with animation -->
+    <i class="bi bi-person-circle fs-4"></i>
+    <!-- Optional: small status dot -->
+    <span class="online-dot"></span>
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+    <li>
+      <a class="dropdown-item d-flex align-items-center" href="{% url 'profile' %}">
+        <i class="bi bi-person me-2"></i> My Profile
+      </a>
+    </li>
+    <li><hr class="dropdown-divider"></li>
+    <li>
+      <a class="dropdown-item d-flex align-items-center" href="{% url 'logout_user' %}">
+        <i class="bi bi-box-arrow-right me-2"></i> Logout
+      </a>
+    </li>
+  </ul>
+</li>
+{% else %}
+<li class="nav-item d-flex gap-2">
+  <a href="{% url 'login_user' %}" class="modern-btn d-flex align-items-center">
+    <i class="bi bi-box-arrow-in-right me-1"></i> Login
+  </a>
+</li>
+{% endif %}
+
+
+
+
+      <li class="nav-item"><button id="darkModeToggle">🌙</button></li>
+    </ul>
+  </div>
+</div>
+</nav>
+
+  <!-- 🔹 Page Content -->
+  
+    {% block content %}
+    {% endblock %}
+  
+
+  <!-- ===== Footer ===== -->
+<footer class="bg-dark text-light py-5 mt-5">
+<div class="container text-center">
+<p>© 2025 <strong>Sachin Dantani</strong>. All rights reserved.</p>
+</div>
+</footer>
+
+  <!-- 🌙 Dark Mode Toggle Script -->
+  <script>
+const body = document.getElementById('body');
+const toggleBtn = document.getElementById('darkModeToggle');
+
+// Page load: check saved mode
+if(localStorage.getItem('dark-mode') === '1') {
+    body.classList.add('dark-mode');
+    if(toggleBtn) toggleBtn.textContent = '☀️';
+}
+
+// Toggle button
+if(toggleBtn){
+    toggleBtn.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        if(body.classList.contains('dark-mode')) {
+            localStorage.setItem('dark-mode', '1');
+            toggleBtn.textContent = '☀️';
+        } else {
+            localStorage.setItem('dark-mode', '0');
+            toggleBtn.textContent = '🌙';
+        }
+    });
+}
+
+// Listen to changes in localStorage from other tabs/pages
+window.addEventListener('storage', (e) => {
+    if(e.key === 'dark-mode') {
+        if(e.newValue === '1') {
+            body.classList.add('dark-mode');
+            if(toggleBtn) toggleBtn.textContent = '☀️';
+        } else {
+            body.classList.remove('dark-mode');
+            if(toggleBtn) toggleBtn.textContent = '🌙';
+        }
+    }
+});
+</script>
+
+
+
+ <!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+
+<script>
+  // Automatically close alert after 3 seconds
+  setTimeout(() => {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      const bsAlert = new bootstrap.Alert(alert);
+      bsAlert.close();
+    });
+  }, 5000); // 3000 = 3 seconds
+</script>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

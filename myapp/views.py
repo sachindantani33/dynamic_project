@@ -512,7 +512,7 @@ def signup_view(request):
 # ==========================
 # Login View
 # ==========================
-def login_view(request):
+def login_user(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')

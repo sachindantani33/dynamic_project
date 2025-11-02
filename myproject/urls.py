@@ -52,7 +52,7 @@ urlpatterns = [
     path("trending_now/<slug:slug>/", tag_detail, name="tag_detail"),
     path("category/<slug:slug>/", category_detail, name="category_detail"),
     
-    path('login_view/', login_view, name='login_user'),
+    path('login_user/', login_user, name='login_user'),
     path('signup_view/', signup_view, name='register_user'),
     path('forgot_view/', forgot_view, name='forgot_password'),
     path('logout_view/', logout_view, name='logout_user'),

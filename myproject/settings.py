@@ -141,20 +141,13 @@ USE_TZ = True
 # MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# ✅ Static files (CSS, JS, Images)
 STATIC_URL = '/static/'
-
-# ये folder collectstatic command के बाद create होगा
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# ये optional है — अगर तुमने manually 'static' folder बनाया है
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# अगर whitenoise use कर रहे हो तो ये line भी होनी चाहिए
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 

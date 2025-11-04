@@ -158,7 +158,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
+DEFAULT_DOMAIN = "untraveling-demeritoriously-jorden.ngrok-free.dev"
+DEFAULT_PROTOCOL = "https"
 
 
 

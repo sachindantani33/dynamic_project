@@ -27,6 +27,11 @@ from myapp.views import *
 
 from django.urls import path, include
 from myapp import views
+from django.contrib.auth import views as auth_views
+
+
+# from myapp.customviews import CustomPasswordResetView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -54,14 +59,34 @@ urlpatterns = [
     
     path('login_user/', login_user, name='login_user'),
     path('signup_view/', signup_view, name='register_user'),
-    path('forgot_view/', forgot_view, name='forgot_password'),
+    # path('forgot_view/', forgot_view, name='forgot_password'),
     path('logout_view/', logout_view, name='logout_user'),
     path('profile/', views.profile_view, name='profile'),
-    path('profile/edit/', views.edit_profile, name='edit_profile')
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
 
     
+    path('forgot/', views.forgot_view, name='forgot_view'),
     
+    # 🔹 Built-in password reset flow
+      # Reset link (confirm)
+    path('reset/<uidb64>/<token>/', 
+         CustomPasswordResetConfirmView.as_view(), 
+         name='password_reset_confirm'),
 
+    # Send email
+    path('reset_password/', 
+         auth_views.PasswordResetView.as_view(template_name="web-site/password_reset.html"), 
+         name='reset_password'),
+
+    # Email sent page
+    path('reset_password_sent/', 
+         auth_views.PasswordResetDoneView.as_view(template_name="web-site/password_reset_sent.html"), 
+         name='password_reset_done'),
+
+    # Password reset done
+    path('reset_password_complete/', 
+         auth_views.PasswordResetCompleteView.as_view(template_name="web-site/password_reset_done.html"), 
+         name='password_reset_complete'),
     # dashboard end  
     
 ]

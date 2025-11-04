@@ -9,8 +9,8 @@ from .models import *
 
 
 
-def login_view(request):
-     return render(request, 'login-form.html')
+# def login_view(request):
+#      return render(request, 'login-form.html')
 
 # dashboard maate
 def login(request):
@@ -540,15 +540,17 @@ def logout_view(request):
 # ==========================
 # Forgot Password View
 # ==========================
+# def forgot_view(request):
+#     if request.method == 'POST':
+#         email = request.POST.get('email')
+#         if User.objects.filter(email=email).exists():
+#             messages.success(request, "Password reset link sent to your email!")
+#         else:
+#             messages.error(request, "Email not found.")
+#     return render(request, 'web-site/forgot_page.html')
 def forgot_view(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        if User.objects.filter(email=email).exists():
-            messages.success(request, "Password reset link sent to your email!")
-            # 🔹 Real email sending can be added here
-        else:
-            messages.error(request, "Email not found.")
-    return render(request, 'web-site/forgot_page.html')
+    return redirect('reset_password')
+
 
 
 
@@ -612,3 +614,22 @@ def edit_profile(request):
         return redirect('profile')
 
     return render(request, 'web-site/edit_profile.html')
+
+
+
+
+# views.py
+
+from django.contrib.auth.views import PasswordResetConfirmView
+from django.urls import reverse_lazy
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'web-site/password_reset_form.html'
+    success_url = reverse_lazy('password_reset_complete')
+
+    # optional debug (add temporarily)
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        print("✅ Password successfully changed for:", self.user)
+        return response
+
